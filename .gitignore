@@ -1,0 +1,7 @@
+*.o
+tictactoe
+.vs/
+.vscode/
+x64/
+*.vcxproj*
+*.sln
