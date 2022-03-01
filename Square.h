@@ -5,7 +5,7 @@ using namespace std;
 class Square {
 public:
 	Square() : state(" ") {};
-    Square(char s);
+    Square(string s);
 	string getState();
 	void setState(string newState);
 private:

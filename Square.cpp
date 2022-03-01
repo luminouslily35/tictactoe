@@ -1,6 +1,6 @@
 #include "Square.h"
 
-Square::Square(char s) {
+Square::Square(string s) {
     state = s;
 }
 

@@ -7,8 +7,12 @@ using namespace std;
 class Board {
 public:
 	Board();
-    string at(int x, int y);
-    void set(int x, int y, string newState);
+    int atPosition(int x, int y);
+    void setPosition(int x, int y, int value);
+    int atAdjusted(int x, int y);
+    void setAdjusted(int x, int y, int newState);
+    void clear();
+    bool isTakenAdjusted(int x, int y);
 private:
-    vector<vector<Square>> squares;
+    vector<vector<int>> squares;
 };
