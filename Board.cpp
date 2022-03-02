@@ -33,3 +33,21 @@ bool Board::isTakenAdjusted(int x, int y) {
     int pos = atAdjusted(x, y);
     return (pos == 1 || pos == 2);
 }
+
+vector<int> Board::asArray() {
+    vector<int> array;
+    for (int x = 1; x < 4; x++)
+        for (int y = 1; y < 4; y++)
+            array.push_back(atAdjusted(x, y));
+    return array;
+}
+
+Board Board::asGrid(vector<int> arr) {
+    Board newBoard;
+    for (int i = 0; i < 9; i++) {
+        int j = i / 3;
+        int k = i % 3;
+        newBoard.setAdjusted(j + 1, k + 1, arr[i]);
+    }
+    return newBoard;
+}

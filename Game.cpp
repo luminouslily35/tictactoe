@@ -124,9 +124,9 @@ void Game::play(Ai ai) {
         else {
             // ai move            
             cout << "The AI moves." << endl;
-            vector<int> choice = ai.playRandom(board);
-            int x = choice[0];
-            int y = choice[1];
+            pair<int, int> choice = ai.aiMove(aiChoice, playerChoice, board);
+            int x = choice.first;
+            int y = choice.second;
             board.setAdjusted(x, y, aiChoice);
             cout << "The AI has placed a marker on (" << x << ", " << y << ")\n---" << endl;
             winner = GameHelper::checkForWin(x, y, aiChoice, board);

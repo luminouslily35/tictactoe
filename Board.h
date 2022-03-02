@@ -13,6 +13,8 @@ public:
     void setAdjusted(int x, int y, int newState);
     void clear();
     bool isTakenAdjusted(int x, int y);
+    vector<int> asArray();
+    static Board asGrid(vector<int> arr);
 private:
     vector<vector<int>> squares;
 };
