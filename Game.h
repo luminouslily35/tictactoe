@@ -16,7 +16,7 @@ public:
     void switchPlayer(int currentPlayer);
     void play(Ai ai);
     bool isValidPosition(int x, int y);
-    vector<int> playerTurn(Board board);
+    pair<int, int> playerTurn(Board board);
     bool areInvalidCoordinates(int x, int y);
     // getters
     Board getBoard();

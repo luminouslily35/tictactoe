@@ -35,9 +35,9 @@ bool GameHelper::winByDiagonal(int marker, Board board) {
         );
 }
 
-bool GameHelper::isValidPlayerMove(int x, int y, Board board) {
-    return x >= 1 && x <= 3 && y >= 1 && y <= 3 && !board.isTakenAdjusted(x, y);
-}
+//bool GameHelper::isValidPlayerMove(int x, int y, Board board) {
+//    return x >= 1 && x <= 3 && y >= 1 && y <= 3 && !board.isTakenAdjusted(x, y);
+//}
 
 void GameHelper::printBoard(Board board) {
     string firstLine = format("(1, )#  {}  #  {}  #  {}  #", 

@@ -7,6 +7,8 @@
 #include <map>
 #include <format>
 #include <string>
+#include <stdexcept>
+#include <sstream>
 using namespace std;
 
 
@@ -59,14 +61,37 @@ void Game::setup() {
 int Game::selectMarker() {
     int choice = 0;
     bool validChoice = false;
+    string inputString;
     do {
+        inputString = "";
         cout << "Please choose a marker:" << endl;
         cout << "1. X" << endl;
         cout << "2. O" << endl;
         cout << "3. Exit" << endl;
-        cin >> choice;
-        if (choice == PLAYER_X || choice == PLAYER_O || choice == EXIT_GAME) validChoice = true;
-        else cout << "You have made an incorrect choice." << endl;
+        try {
+            getline(cin, inputString);
+            if (inputString == "X" || inputString == "O") {
+                throw invalid_argument("Please type 1 for X and 2 for O instead.");
+            }
+            // try to convert to int
+            size_t pos;
+            try {
+                choice = stoi(inputString, &pos, 10);
+                if (inputString.length() != 1) {
+                    throw exception();
+                }
+            }
+            catch (const exception& e) {
+                throw invalid_argument("invalid argument received");
+            }
+
+            if (choice == PLAYER_X || choice == PLAYER_O || choice == EXIT_GAME) validChoice = true;
+            else
+                throw invalid_argument("number not 1, 2, or 3");
+        }
+        catch (const exception& e) {
+            cout << "ERROR: " << e.what() << endl;
+        }
     } while (!validChoice);
     return choice;
 }
@@ -110,12 +135,13 @@ void Game::play(Ai ai) {
         if (nextPlayer == playerChoice) {
             // player move
             cout << "Type a pair of numbers to make your move. (e.g. 1 2)" << endl;
+            cout << "Note: Do not add commas or parentheses when making your decision!" << endl;
             GameHelper::printBoard(board);
             
             // choose a coordinate
-            vector<int> choice = playerTurn(board);
-            int x = choice[0];
-            int y = choice[1];
+            pair<int, int> choice = playerTurn(board);
+            int x = choice.first;
+            int y = choice.second;
             // place marker on coordinate
             board.setAdjusted(x, y, playerChoice);
             cout << "You have placed a marker on (" << x << ", " << y << ")\n---" << endl;
@@ -156,21 +182,62 @@ bool Game::areInvalidCoordinates(int x, int y) {
     return x < 1 || x > 3 || y < 1 || y > 3;
 }
 
-vector<int> Game::playerTurn(Board board) {
+pair<int, int> Game::playerTurn(Board board) {
     int x = 0;
     int y = 0;
-    while (!GameHelper::isValidPlayerMove(x, y, board)) {
-        cin >> x >> y;
-        if (areInvalidCoordinates(x, y)) {
-            cout << "These coordinates are not valid." << endl;
-            cout << "Please input another x, y value." << endl;
+    string playerInput;
+    bool validMove = false;
+
+    while (!validMove) {
+        try {
+            getline(cin, playerInput);
+            istringstream is (playerInput);
+            vector<string> v((istream_iterator<string>(is)), istream_iterator<string>());
+
+            if (v.size() > 2) {
+                throw exception("too many arguments");
+            }
+            else if (v.size() < 2) {
+                throw exception("too few arguments");
+            }
+            
+            vector<int> numbers;
+            for (string str : v) {
+                if (str.length() != 1) {
+                    throw exception("invalid argument");
+                }
+                size_t pos;
+                int result = 0;
+                try {
+                    result = stoi(str, &pos, 10);
+                }
+                catch (const exception& e) {
+                    throw exception("invalid argument");
+                }
+
+                if (result > 3 || result < 1) {
+                    throw exception("coordinate out of bounds");
+                }
+                numbers.push_back(result);
+            }
+            x = numbers[0];
+            y = numbers[1];
+
+            if (areInvalidCoordinates(x, y)) {
+                throw exception("invalid coordinates");
+            }
+            else if (board.isTakenAdjusted(x, y)) {
+                throw exception("this coordinate is occupied");
+            }
+            validMove = true;
         }
-        else if (board.isTakenAdjusted(x, y)) {
-            cout << "This square is currently occupied." << endl;
-            cout << "Please input another x, y value." << endl;
+        catch (const exception& e) {
+            cout << "ERROR: " << e.what() << endl;
         }
+
+
     }
-    vector<int> choice = {x, y};
+    pair<int, int> choice = {x, y};
     return choice;
 }
 

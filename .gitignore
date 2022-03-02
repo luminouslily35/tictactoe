@@ -5,3 +5,4 @@ tictactoe
 x64/
 *.vcxproj*
 *.sln
+.gitattributes
